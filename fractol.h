@@ -1,75 +1,63 @@
 #ifndef __FRACTOL_H
 # define __FRACTOL_H
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <mlx.h>
-#include <math.h>
-#define RAD M_PI / 180
-#define AL RAD * 90 //rotate x;
-#define BT RAD * 25	//roate y;
-#define GM RAD * 35 // rotate z;
-#define KEY_MAC 53
-#define KEY_LINUX 65307
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include "mlx.h"
+# include <math.h>
+# define KEY_MAC 53
+# define KEY_LINUX 65307
+# define W_MAX 1920
+# define H_MAX 1080
+# define W 1200
+# define H 600
 
-typedef struct	fdf_list
+typedef struct s_img
 {
-	char *line;
-	struct fdf_list *next;
-}				td_list;
+	char *addr;
+	int bpp;
+	int size_line;
+	int endian;
+	double zoom;
+	double move_x;
+	double move_y;
+	int fr;
+}			t_img;
 
-typedef struct f_point
+typedef struct s_mlx
 {
-	int x;
-	int y;
-	int z;
-}			t_point;
+	void *mlx_ptr;
+	void *win_ptr;
+	void *img_ptr;
+	t_img img;
+}	t_mlx;
 
-typedef struct f_seg
+typedef struct s_color
 {
-	int x1;
-	int y1;
-	int z1;
-	int x2;
-	int y2;
-	int z2;
-	struct f_seg *next;
-}				t_seg;
+	int r;
+	int g;
+	int b;
+}	t_color;
 
-typedef struct f_coord
+typedef struct s_hsv
 {
-	int x;
-	int y;
-	int z;
-	struct f_coord *next;
-}			t_coord;
+	int h;
+	int s;
+	int v;
+}	t_hsv;
 
-int ft_count_list(td_list *list);
-void	ft_print_list(td_list *list);
-td_list *ft_new_list(char *line);
-void	ft_add_list(td_list *list, char *line);
-td_list *ft_to_list(int fd);
-void	ft_print_arr(int **ar);
-int **ft_to_array(td_list *list);
-t_seg *ft_new_seg(int x1, int y1, int z1, int x2, int y2, int z2);
-void	ft_add_seg(t_seg *seg, int x1, int y1, int z1, int x2, int y2, int z2);
-t_seg	*ft_to_seg(int **ar);
-void	ft_print_seg(void *mlx_ptr, void *win_ptr, t_seg *seg);
-t_seg	*ft_incr_map(t_seg *seg);
-t_seg *ft_rotate_xy(t_seg *seg);
-t_seg *ft_rotate_z(t_seg *seg);
-void	ft_draw(td_list *list, void *mlx_ptr, void *win_ptr);
-int ft_width(char *line);
-void	ft_line(void *mlx_ptr, void *win_ptr, int x1, int y1, int x2, int y2);
-int	ft_isometric(int x);
-
+void ft_draw_julia(t_img *img);
+void ft_img_pixel_put(t_img *img, int x, int y, int color);
+int	ft_expose_img(t_mlx *mlx);
+void	ft_error(char *er);
+int ft_rgb_to_int(t_color c);
+t_color		ft_calc_rgb(t_hsv hsv);
+t_hsv		ft_calc_hsv(int r, int g, int b);
+void ft_draw(t_img *img);
+void	ft_mandelbrot_draw(t_img *img);
+void ft_img_pixel_put(t_img *img, int x, int y, int color);
+int ft_select_fractol(char **av);
+void	ft_init_mlx(t_mlx *mlx);
 
 #endif
-
-/* Rotirea in jurul unui punc F(x,y).
-
-x = x*cos(al) - y*sin(al) + xf - xf*cos(al) + yf*sin(al);
-y = x*sin(al) + y*cos(al) + yf - xg*sin(al) - yf*cos(al);
-
-*/

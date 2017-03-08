@@ -13,10 +13,9 @@ all:
 	gcc -o $(NAME) $(OBJ) $(FL) $(XFL) -L libft/ -lft
 clean:
 	rm -f $(OBJ)
+	make -C libft/ clean
 fclean: clean
 	rm -f $(NAME)
 	make -C libft/ fclean
-re: fclean
-	gcc -c $(SRC) $(FL) -I libft/
-	gcc -o $(NAME) $(OBJ) $(FL) $(XFL) -L libft/ -lft
+re: fclean all
 .PHONY: all clean fclean re
